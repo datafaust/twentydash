@@ -140,25 +140,25 @@ ui = dashboardPage(skin = "yellow",
                        menuItem("Objective", tabName = "objective", icon("dashboard")),
                        menuItem("Shifts", tabName = "shifts", icon = icon("dashboard")),
                        menuItem("Driver Income", tabName = "driver_income", icon = icon("fa fa-bar-chart"),
-                               menuSubItem("Yellow & Green Cabs", tabName = "ygcabs_income", href = NULL, newtab = TRUE,
-                                          icon = shiny::icon("angle-double-right"), selected = NULL),
-                       menuSubItem("FHV's", tabName = "fhv_income", href = NULL, newtab = TRUE,
-                                  icon = shiny::icon("angle-double-right"), selected = NULL)#,
-                       #menuSubItem("Driver Education", tabName = "driver_education", href = NULL, newtab = TRUE,
-                       #            icon = shiny::icon("angle-double-right"), selected = NULL)
-                       # menuSubItem("EHAIL Metrics", tabName = "ehail", href = NULL, newtab = TRUE,
-                       #             icon = shiny::icon("angle-double-right"), selected = NULL),
-                       # menuSubItem("Borough Statistics", tabName = "borough_stats", href = NULL, newtab = TRUE,
-                       #             icon = shiny::icon("angle-double-right"), selected = NULL),
-                       # menuSubItem("Industry Insights Tool", tabName = "insighttool", href = NULL, newtab = TRUE,
-                       #             icon = shiny::icon("angle-double-right"), selected = NULL)
+                                menuSubItem("Yellow & Green Cabs", tabName = "ygcabs_income", href = NULL, newtab = TRUE,
+                                            icon = shiny::icon("angle-double-right"), selected = NULL),
+                                menuSubItem("FHV's", tabName = "fhv_income", href = NULL, newtab = TRUE,
+                                            icon = shiny::icon("angle-double-right"), selected = NULL)#,
+                                #menuSubItem("Driver Education", tabName = "driver_education", href = NULL, newtab = TRUE,
+                                #            icon = shiny::icon("angle-double-right"), selected = NULL)
+                                # menuSubItem("EHAIL Metrics", tabName = "ehail", href = NULL, newtab = TRUE,
+                                #             icon = shiny::icon("angle-double-right"), selected = NULL),
+                                # menuSubItem("Borough Statistics", tabName = "borough_stats", href = NULL, newtab = TRUE,
+                                #             icon = shiny::icon("angle-double-right"), selected = NULL),
+                                # menuSubItem("Industry Insights Tool", tabName = "insighttool", href = NULL, newtab = TRUE,
+                                #             icon = shiny::icon("angle-double-right"), selected = NULL)
                        ),
                        
                        menuItem("Bases", tabName = "wizard", icon =icon("fa fa-magic"),
-                       menuSubItem("Company Networks", tabName = "company_networks", href = NULL, newtab = TRUE,
-                                   icon = shiny::icon("angle-double-right"), selected = NULL),
-                        menuSubItem("Shifts in the industry", tabName = "industry_shifts", href = NULL, newtab = TRUE,
-                                    icon = shiny::icon("angle-double-right"), selected = NULL)),
+                                menuSubItem("Company Networks", tabName = "company_networks", href = NULL, newtab = TRUE,
+                                            icon = shiny::icon("angle-double-right"), selected = NULL),
+                                menuSubItem("Shifts in the industry", tabName = "industry_shifts", href = NULL, newtab = TRUE,
+                                            icon = shiny::icon("angle-double-right"), selected = NULL)),
                        
                        
                        
