@@ -149,6 +149,10 @@ ui = dashboardPage(skin = "yellow",
                                                   , height = 600, width = 1500
                                                   )
                                  )
+                               ),
+                               fluidRow(
+                                 box(dataTableOutput('datatable'), 
+                                     downloadButton('downloadData', 'Download'))
                                )
                             ),
                        
@@ -193,10 +197,9 @@ server = function(input, output) {
                                mon_year <= end_date1 &
                                dayz == input$weekday), c(1:7))
     print(new_df)
-    new_df = new_df[, .(freq = sum(N)), by= .(mon_year, industry, quarter_hour)]
+    new_df = new_df[, .(freq = sum(N)), by= .(mon_year, industry, quarter_hour, dayz)]
     print(new_df)
     #plot1 = plot_ly(new_df,x = shifts$quarter_hour,y = shifts$N,type = "bar")
-    plot1 = 
       ggplotly(
       ggplot(new_df, aes(x = quarter_hour, y = freq, fill = industry))+
       geom_bar(stat = "identity") +
@@ -207,11 +210,36 @@ server = function(input, output) {
       #+ theme(axis.title.x=element_blank(),
        #       axis.text.x=element_blank(),
         #      axis.ticks.x=element_blank()) 
-      
       )
-    plot1
-    
-  })
+    #download
+  }
+  )
+  
+  output$datatable = renderDataTable({
+    start_date1 = input$monthdate[1]
+    end_date1 = input$monthdate[2]
+    new_df = subset(shifts, (mon_year >= start_date1 & 
+                               mon_year <= end_date1 &
+                               dayz == input$weekday), c(1:7))
+    new_df = new_df[, .(freq = sum(N)), by= .(mon_year, industry, quarter_hour, dayz)]
+  }
+  )
+  
+  
+  output$downloadData = downloadHandler(
+    filename = function() {
+      paste('data', Sys.Date(), '.csv', sep='')
+    },
+    content = function(con) {
+      write.csv(new_df, con)
+    }
+  )
+  
+  
+
+  
+  
+
   
 
   #TOP VALUE BOXES-------------------------------------------------------------------------------------------------------------------
