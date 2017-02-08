@@ -135,16 +135,18 @@ ui = dashboardPage(skin = "yellow",
                                  box(background = "black", dateRangeInput("monthdate", label = h3("Choose a Date Range"),
                                                                           start = '2015-01-01',
                                                                           end = as.Date(Sys.time())-365)),
-                                 box(background="black", selectInput(inputId = "category", label = strong("Choose Metric"),
-                                                                     choices = c('Trips, Drivers & Vehicles'='1', 'Time & Money' = '2'), 
+                                 box(background="black", selectInput(inputId = "weekday", label = strong("Choose weekday"),
+                                                                     choices = c('Monday'='Monday', 'Tuesday' = 'Tuesday',
+                                                                                 'Wednesday'='Wednesday', 'Thursday' = 'Thursday',
+                                                                                 'Friday'='Friday', 'Saturday'='Saturday', 'Sunday' = 'Sunday'), 
                                                                      multiple = FALSE, selectize = TRUE))
                                  #box(textOutput("textboxshifts"))
                                ),
                                fluidRow(
-                                 box(title = "shifts across time",
+                                 box(width = 12,title = "shifts across time",
                                      status = "warning", solidHeader = TRUE, collapsible = TRUE,
                                      plotlyOutput("plot_1"
-                                                  , height = "400px", width = "600px"
+                                                  , height = 600, width = 1500
                                                   )
                                  )
                                )
@@ -184,17 +186,29 @@ server = function(input, output) {
   output$plot_1 = renderPlotly({
     start_date1 = input$monthdate[1]
     end_date1 = input$monthdate[2]
-    new_df = td = subset(shifts, (mon_year >= start_date1 & mon_year <= end_date1), c(1:6))
     
+    print(input$weekday)
+    
+    new_df = subset(shifts, (mon_year >= start_date1 & 
+                               mon_year <= end_date1 &
+                               dayz == input$weekday), c(1:7))
     print(new_df)
-    
+    new_df = new_df[, .(freq = sum(N)), by= .(mon_year, industry, quarter_hour)]
+    print(new_df)
     #plot1 = plot_ly(new_df,x = shifts$quarter_hour,y = shifts$N,type = "bar")
     plot1 = 
       ggplotly(
-      ggplot(NULL, aes(lab, perc)) + 
-      geom_bar(aes(fill = "App"), data = new_df[app = "App"], alpha = 0.5) +
-      geom_bar(aes(fill = "Shl"), data = new_df[app = "Shl"], alpha = 0.5)
-      )    
+      ggplot(new_df, aes(x = quarter_hour, y = freq, fill = industry))+
+      geom_bar(stat = "identity") +
+      xlab("The Quarter Hours") +
+        ylab("Frequency") +
+        ggtitle(paste("Most Common Shift Start Times Rounded to the Nearest Quarter Hour"))
+      +  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+      #+ theme(axis.title.x=element_blank(),
+       #       axis.text.x=element_blank(),
+        #      axis.ticks.x=element_blank()) 
+      
+      )
     plot1
     
   })
