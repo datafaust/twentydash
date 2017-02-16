@@ -161,6 +161,36 @@ ui = dashboardPage(skin = "yellow",
                                )
                             ),
                        
+                       #shift statistics------------------------------
+                       
+                       tabItem(tabName = "shift_stats",
+                               
+                               fluidRow(
+                                 box(background = "black", dateRangeInput("monthdate2", label = h3("Choose a Date Range"),
+                                                                          start = '2015-01-01',
+                                                                          end = as.Date(Sys.time())-365)),
+                                 box(background="black", selectInput(inputId = "weekday2", label = strong("Choose weekday"),
+                                                                     choices = c('Monday'='Monday', 'Tuesday' = 'Tuesday',
+                                                                                 'Wednesday'='Wednesday', 'Thursday' = 'Thursday',
+                                                                                 'Friday'='Friday', 'Saturday'='Saturday', 'Sunday' = 'Sunday'), 
+                                                                     multiple = FALSE, selectize = TRUE))
+                                 #box(textOutput("textboxshifts"))
+                               ),
+                               fluidRow(
+                                 box(width = 12,title = "shifts",
+                                     status = "warning", solidHeader = TRUE, collapsible = TRUE,
+                                     plotlyOutput("plot_2"
+                                                  , height = 600, width = 1500
+                                     )
+                                 )
+                               ),
+                               fluidRow(
+                                 box(dataTableOutput('datatable2'), 
+                                     downloadButton('downloadData2', 'Download'))
+                               )
+                       ),
+                       
+                       
                        # driver income-------------------------------------------------------------------------------------------------
                        tabItem(tabName = "driver_income"),
                        
@@ -242,6 +272,14 @@ server = function(input, output) {
   
   
 
+  
+  #shift statistics-------------------------------------------------------------
+  
+  
+  
+  
+  
+  
   
   
 
