@@ -138,7 +138,10 @@ ui = dashboardPage(skin = "yellow",
                    dashboardSidebar(
                      sidebarMenu(
                        menuItem("Objective", tabName = "objective", icon("dashboard")),
-                       menuItem("Shifts", tabName = "shifts", icon = icon("dashboard")),
+                       menuItem("Shifts", tabName = "shifts", icon = icon("dashboard")
+                                #menuSubItem("Shift Statistics", tabName = "shift_stats", href = NULL, newtab = TRUE,
+                                 #           icon = shiny::icon("angle-double-right"), selected = NULL)
+                                ),
                        menuItem("Driver Income", tabName = "driver_income", icon = icon("fa fa-bar-chart"),
                                menuSubItem("Yellow & Green Cabs", tabName = "ygcabs_income", href = NULL, newtab = TRUE,
                                           icon = shiny::icon("angle-double-right"), selected = NULL),
