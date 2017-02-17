@@ -13,4 +13,6 @@ shifts[,mon_year:=as.Date(paste0(mon_year, "-28"))]
 
 setwd(dirs$shift_stats)
 #shift_statz = fread("shift_statistics.csv")
-load("shift_sum.Rbin")
+
+load("shift_statz.Rbin")
+#shift_sum[,mon_year:=as.Date(paste0(mon_year, "-28"))]

@@ -164,26 +164,27 @@ ui = dashboardPage(skin = "yellow",
                        #shift statistics------------------------------
                        
                        tabItem(tabName = "shift_stats",
-                               
                                fluidRow(
-                                 box(background = "black", dateRangeInput("monthdate2", label = h3("Choose a Date Range"),
-                                                                          start = '2015-01-01',
-                                                                          end = as.Date(Sys.time())-365)),
-                                 box(background="black", selectInput(inputId = "weekday2", label = strong("Choose weekday"),
-                                                                     choices = c('Monday'='Monday', 'Tuesday' = 'Tuesday',
-                                                                                 'Wednesday'='Wednesday', 'Thursday' = 'Thursday',
-                                                                                 'Friday'='Friday', 'Saturday'='Saturday', 'Sunday' = 'Sunday'), 
-                                                                     multiple = FALSE, selectize = TRUE))
-                                 #box(textOutput("textboxshifts"))
-                               ),
-                               fluidRow(
-                                 box(width = 12,title = "shifts",
-                                     status = "warning", solidHeader = TRUE, collapsible = TRUE,
-                                     plotlyOutput("plot_2"
-                                                  , height = 600, width = 1500
-                                     )
-                                 )
-                               ),
+                                 sidebarLayout(
+                                   sidebarPanel(
+                                     dateRangeInput("monthdate2", label = h3("Date Range"),start = '2016-01-01',
+                                                    end = as.Date(Sys.time())-100),
+                                     selectInput("element_id1_m", "Select Your Variable for x-axis", c("mon_year"), selected = "mon_year"),
+                                     selectInput("element_id2_m", "Select Your Variable for y-axis", c("avg_freq"), selected = "days_worked"),
+                                     selectInput("element_id3_m", "Select Your Grouping Variable", c("trip",
+                                                                                                     "shift_break",
+                                                                                                     "rest"), selected = 'shift_cat')),
+                                   mainPanel(h3("Outputs"),
+                                             textOutput("id1_m"),
+                                             textOutput("id2_m"),
+                                             textOutput("id3_m"),
+                                             plotlyOutput("plt_m")
+                                             #,plotlyOutput("plt2_m")
+                                             )
+                                   
+                                   
+                                 ))
+                               ,
                                fluidRow(
                                  box(dataTableOutput('datatable2'), 
                                      downloadButton('downloadData2', 'Download'))
@@ -275,7 +276,52 @@ server = function(input, output) {
   
   #shift statistics-------------------------------------------------------------
   
-  
+  output$plt_m = renderPlotly({
+    start_date = input$monthdate2[1]
+    end_date = input$monthdate2[2]
+    
+    shift_sum_agg = shift_sum[,.(avg_freq= mean(number_of_breaks_trips_rests))
+    ,by = .(industry, mon_year, shift_cat)]
+    
+    
+    shift_sum_agg[,mon_year:=as.Date(paste0(mon_year, "-28"))]
+    
+    print(shift_sum_agg)
+    
+    td =  subset(shift_sum_agg, 
+                 (shift_cat == input$element_id3_m) & 
+                   (mon_year >= start_date & mon_year <= end_date), 
+                 c("industry",
+                   "mon_year",
+                   "shift_cat",
+                   "avg_freq"))
+    print(td)
+     ggplotly(ggplot(td, aes_string(x = input$element_id1_m, y = input$element_id2_m)) + 
+                geom_bar(stat = 'identity') + 
+                ggtitle("Trends in Monthly TLC Metrics")+
+                scale_y_continuous(labels = comma)+
+                theme(panel.background = element_rect(fill = 'black'),
+                      panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(),
+                      axis.title.x = element_text(size = 13, colour = 'black'),
+                      axis.title.y = element_text(size = 13, colour = 'black'),
+                      axis.title = element_text(size = 18, colour = 'black'),
+                      axis.text.x  = element_text(vjust=.5, size=13, angle = 90)))
+    
+     
+     # boots = plot_ly(x = td[,input$element_id1_m], y = td[,input$element_id2_m], type = "bar", 
+    #                 data = td, split = td[,input$element_id3_m]) 
+    # boots = layout(boots,              # all of layout's properties: /r/reference/#layout
+    #                title = "Monthly Industry Trends Over Time", # layout's title: /r/reference/#layout-title
+    #                xaxis = list(           # layout's xaxis is a named list. List of valid keys: /r/reference/#layout-xaxis
+    #                  title = input$element_id1_m,     # xaxis's title: /r/reference/#layout-xaxis-title
+    #                  showgrid = F        # xaxis's showgrid: /r/reference/#layout-xaxis-showgrid
+    #                ),
+    #                yaxis = list(           # layout's yaxis is a named list. List of valid keys: /r/reference/#layout-yaxis
+    #                  title = input$element_id2_m      # yaxis's title: /r/reference/#layout-yaxis-title
+    #                ))
+    # 
+  })
   
   
   
