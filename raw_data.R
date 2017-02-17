@@ -1,5 +1,5 @@
 #source different data
-
+library(data.table)
 
 dirs = list(shifts = "I:/COF/COF/Analytics_and_Automation_Engineering/tlc2020/final_tables",
             shift_stats = "I:/COF/COF/Analytics_and_Automation_Engineering/tlc2020")

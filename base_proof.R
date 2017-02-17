@@ -170,25 +170,23 @@ ui = dashboardPage(skin = "yellow",
                                      dateRangeInput("monthdate2", label = h3("Date Range"),start = '2016-01-01',
                                                     end = as.Date(Sys.time())-100),
                                      selectInput("element_id1_m", "Select Your Variable for x-axis", c("mon_year"), selected = "mon_year"),
-                                     selectInput("element_id2_m", "Select Your Variable for y-axis", c("avg_freq"), selected = "days_worked"),
-                                     selectInput("element_id3_m", "Select Your Grouping Variable", c("trip",
-                                                                                                     "shift_break",
-                                                                                                     "rest"), selected = 'shift_cat')),
+                                     selectInput("element_id2_m", "Select Your Variable for y-axis", c("avg_freq"), selected = "avg_freq"),
+                                     selectInput("element_id3_m", "Select Your Grouping Variable", c("industry"), selected = 'industry')),
                                    mainPanel(h3("Outputs"),
                                              textOutput("id1_m"),
                                              textOutput("id2_m"),
                                              textOutput("id3_m"),
                                              plotlyOutput("plt_m")
-                                             #,plotlyOutput("plt2_m")
+                                             ,plotlyOutput("plt2_m")
                                              )
                                    
                                    
                                  ))
-                               ,
-                               fluidRow(
-                                 box(dataTableOutput('datatable2'), 
-                                     downloadButton('downloadData2', 'Download'))
-                               )
+                               
+                               # fluidRow(
+                               #   box(dataTableOutput('datatable2'), 
+                               #       downloadButton('downloadData2', 'Download'))
+                               # )
                        ),
                        
                        
@@ -285,19 +283,28 @@ server = function(input, output) {
     
     
     shift_sum_agg[,mon_year:=as.Date(paste0(mon_year, "-28"))]
-    
-    print(shift_sum_agg)
-    
     td =  subset(shift_sum_agg, 
-                 (shift_cat == input$element_id3_m) & 
+                 (shift_cat == "shift_break") & 
                    (mon_year >= start_date & mon_year <= end_date), 
                  c("industry",
                    "mon_year",
                    "shift_cat",
                    "avg_freq"))
+
+    print(str(td))
+    #td$mon_year = as.Date(td$mon_year)
     print(td)
-     ggplotly(ggplot(td, aes_string(x = input$element_id1_m, y = input$element_id2_m)) + 
-                geom_bar(stat = 'identity') + 
+    #td$avg_freq = as.numeric(td$avg_freq)
+    
+    
+    
+     ggplotly(ggplot(td, aes_string(x = input$element_id1_m, y = input$element_id2_m, color = input$element_id3_m,
+                                    group = input$element_id3_m
+                                    )) + 
+                geom_line(
+                  #stat = 'identity', 
+                  #position = "dodge"
+                  ) + 
                 ggtitle("Trends in Monthly TLC Metrics")+
                 scale_y_continuous(labels = comma)+
                 theme(panel.background = element_rect(fill = 'black'),
